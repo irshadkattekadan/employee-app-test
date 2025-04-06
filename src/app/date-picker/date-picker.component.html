@@ -1,0 +1,75 @@
+<!-- Trigger Input -->
+<div class="calendar-trigger" (click)="toggleCalendar()">
+    <div class="form-group w-100 mb-3">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="far fa-calendar-alt"></i>
+            </span>
+
+            <div class="form-control mt-2 small-text-mobile px-0" *ngIf="isValidDate(selectedDate)">
+                {{ formatDate(selectedDate) }}
+            </div>
+            <div *ngIf="!isValidDate(selectedDate)" class="text-muted form-control mt-2">No Date</div>
+        </div>
+    </div>
+</div>
+
+<!-- Fullscreen Modal-like Backdrop -->
+<div class="calendar-backdrop" *ngIf="showCalendar">
+    <div class="calendar-modal">
+        <div class="row">
+            <div class="col-6 mb-2">
+                <button class="btn btn-sm btn-outline-primary w-100" (click)="selectQuickDate('today')">Today</button>
+            </div>
+            <div class="col-6 mb-2">
+                <button class="btn btn-sm btn-outline-primary w-100" (click)="selectQuickDate('nextMonday')">Next
+                    Monday</button>
+            </div>
+            <div class="col-6 mb-2">
+                <button class="btn btn-sm btn-outline-primary w-100" (click)="selectQuickDate('nextTuesday')">Next
+                    Tuesday</button>
+            </div>
+            <div class="col-6 mb-2">
+                <button class="btn btn-sm btn-outline-primary w-100" (click)="selectQuickDate('oneWeek')">After One
+                    Week</button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <button class="btn btn-sm btn-light" (click)="prevMonth()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <strong>{{ months[currentMonth] }} {{ currentYear }}</strong>
+            <button class="btn btn-sm btn-light" (click)="nextMonth()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="d-grid calendar-grid mb-2">
+            <div class="text-center fw-bold">Su</div>
+            <div class="text-center fw-bold">Mo</div>
+            <div class="text-center fw-bold">Tu</div>
+            <div class="text-center fw-bold">We</div>
+            <div class="text-center fw-bold">Th</div>
+            <div class="text-center fw-bold">Fr</div>
+            <div class="text-center fw-bold">Sa</div>
+            <ng-container *ngFor="let d of days">
+                <div class="text-center py-1" [class.bg-primary]="isSelected(d)" [class.text-white]="isSelected(d)"
+                    [class.cursor-pointer]="!!d" (click)="selectDate(d)">
+                    {{ d?.getDate() || '' }}
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2">
+            <i class="far fa-calendar-alt text-muted"></i>
+            <span>{{ isValidDate(tempSelectedDate) ? formatDate(tempSelectedDate) : 'No Date' }}</span>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary" (click)="cancel()">Cancel</button>
+                <button class="btn btn-sm btn-primary" (click)="save()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+    <div *ngIf="loading" class="loader-container">
+        <div class="spinner"></div>
+    </div>
+    
+    <div *ngIf="!loading" >
+        <div *ngIf="(!previousEmployees.length && !currentEmployees.length); else dataAvailable"
+            class="centered-no-data" style="height: calc(100vh - 60px);">
+    
+            <img src="assets/no-data.png" alt="No data" class="mb-4 opacity-80  w-100" />
+    
+            <h2 class="text-xl text-gray-600">No employee records found</h2>
+        </div>
+    
+        <ng-template #dataAvailable>
+            <div class="pt-1">
+              <!-- Current Employees -->
+              <h5 class="text-primary fw-bold mb-3 ms-3 mt-3">Current employees</h5>
+              <div class="row">
+                <ng-container *ngIf="currentEmployees.length > 0; else noCurrentEmployees">
+                  <div class="col-sm-6 col-md-4" *ngFor="let emp of currentEmployees">
+                    <div class="swipe-container">
+                      <!-- Delete background -->
+                      <div class="swipe-bg text-white d-flex justify-content-end align-items-center" >
+                        <button class="btn btn-danger me-3" (click)="deleteEmployee(emp)">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                      <!-- Foreground card -->
+                      <div
+                        class="card shadow-sm position-relative swipe-card"
+                        style="border-radius: unset !important; border: 0.3px solid #ccc;"
+                        [class.swiped-left]="emp.showDelete === true"
+                        (swipeleft)="onSwipe(emp)"
+                        (swiperight)="onSwipeReset(emp)"
+                        (click)="goToEditPage(emp)">
+                        <div class="card-body">
+                          <h5 class="mb-1 fw-semibold">{{ emp.name }} {{emp.showDelete}}</h5>
+                          <p class="mb-1 text-muted h6">{{ capitalize(emp.role) }}</p>
+                          <p class="mb-0 text-muted small">From {{ emp.fromDate }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+              <ng-template #noCurrentEmployees>
+                <div class="text-muted text-center mb-3">No current employees</div>
+              </ng-template>
+          
+              <!-- Previous Employees -->
+              <h5 class="text-primary fw-bold mb-3 ms-3 mt-3">Previous employees</h5>
+              <div class="row">
+                <ng-container *ngIf="previousEmployees.length > 0; else noPreviousEmployees">
+                  <div class="col-sm-6 col-md-4" *ngFor="let emp of previousEmployees">
+                    <div class="swipe-container">
+                      <!-- Delete background -->
+                      <div class="swipe-bg text-white d-flex justify-content-end align-items-center">
+                        <button class="btn btn-danger me-3" (click)="deleteEmployee(emp)">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
+                      <!-- Foreground card -->
+                      <div
+                        class="card shadow-sm position-relative swipe-card"
+                        style="border-radius: unset !important; border: 0.3px solid #ccc;"
+                        [class.swiped-left]="emp.showDelete"
+                        (swipeleft)="onSwipe(emp)"
+                        (swiperight)="onSwipeReset(emp)"
+                        (click)="goToEditPage(emp)">
+                        <div class="card-body">
+                          <h5 class="mb-1 fw-semibold">{{ emp.name }}</h5>
+                          <p class="mb-1 text-muted h6">{{ capitalize(emp.role) }}</p>
+                          <p class="mb-0 text-muted small">{{ emp.fromDate }} - {{ emp.toDate }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+              <ng-template #noPreviousEmployees>
+                <div class="text-muted text-center mb-3">No previous employees</div>
+              </ng-template>
+          
+              <div class="text-center text-muted mt-3 h6 float-start">Swipe left to delete</div>
+            </div>
+          </ng-template>
+          
+        
+    </div>
+    
+    
+    <button class="add-btn" (click)="goToAddPage()" title="Add Employee">
+        +
+    </button>
+
+  <div class="undo-toast w-100" *ngIf="showUndoToast">
+    <span>Employee deleted</span>
+    <button class="btn float-end btn-link p-0 m-0" (click)="undoDelete()">Undo</button>
+</div>

@@ -1,0 +1,27 @@
+.input-group {
+    border: 1px solid gray;
+    height: 50px;
+    border-radius: 5px;
+    .input-group-text {
+        border: unset;
+        background-color: unset;
+        color: #1976d2;
+        font-size: 1.2rem;
+    }
+    input{
+        border: unset;
+        background-color: unset;
+    }
+    input:focus {
+        box-shadow: unset;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    select {
+        border: unset;
+    }
+}
+
+.main-content{
+    height: calc(100vh - 60px);
+}

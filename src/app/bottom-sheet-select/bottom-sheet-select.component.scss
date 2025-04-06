@@ -1,0 +1,79 @@
+.popup-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1040;
+  }
+  
+  /* Mobile bottom sheet */
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    z-index: 1050;
+    animation: slide-up 0.3s ease-out;
+  }
+  
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  
+  /* Desktop modal */
+  .modal-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    background: white;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modal-content-box {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .input-group {
+    border: 1px solid gray;
+    height: 50px;
+    border-radius: 5px;
+    .input-group-text {
+        border: unset;
+        background-color: unset;
+        color: #1976d2;
+        font-size: 1.2rem;
+    }
+    input{
+        border: unset;
+        background-color: unset;
+    }
+    input:focus {
+        box-shadow: unset;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    select {
+        border: unset;
+    }
+}
+
+.main-content{
+    height: calc(100vh - 60px);
+}
+  
+.form-control{
+    border: unset;
+}

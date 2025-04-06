@@ -1,0 +1,41 @@
+<div class="form-group">
+    <div class="input-group" (click)="toggleSheet()">
+        <span *ngIf="icon" class="input-group-text">
+          <i [class]="icon"></i>
+        </span>
+        <div class="form-control d-flex justify-content-between align-items-center">
+          <span>{{ selected || placeholder }}</span>
+          <i class="fas fa-chevron-up" *ngIf="isSheetOpen"></i>
+          <i class="fas fa-chevron-down" *ngIf="!isSheetOpen"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Backdrop -->
+<div class="popup-backdrop" *ngIf="isSheetOpen" (click)="toggleSheet()"></div>
+
+<!-- Mobile Bottom Sheet -->
+<div class="bottom-sheet" *ngIf="isSheetOpen && isMobile">
+    <div class="list-group">
+        <button *ngFor="let option of options" type="button" class="list-group-item list-group-item-action text-center"
+            (click)="selectOption(option)">
+            {{ option }}
+        </button>
+    </div>
+</div>
+
+<!-- Desktop Modal -->
+<div class="modal-popup" *ngIf="isSheetOpen && !isMobile">
+    <div class="modal-content-box">
+        <h5 class="text-center mb-3">Select an Option</h5>
+        <div class="list-group">
+            <button *ngFor="let option of options" type="button"
+                class="list-group-item list-group-item-action text-center" (click)="selectOption(option)">
+                {{ option }}
+            </button>
+        </div>
+        <div class="text-center mt-3">
+            <button class="btn btn-secondary btn-sm" (click)="toggleSheet()">Cancel</button>
+        </div>
+    </div>
+</div>
