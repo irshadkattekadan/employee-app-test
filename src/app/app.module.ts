@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, HammerModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +8,7 @@ import { EmployeeAddComponent } from './employee-add/employee-add.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { BottomSheetSelectComponent } from './bottom-sheet-select/bottom-sheet-select.component';
+import { MyHammerConfig } from './services/hammer.config';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,9 @@ import { BottomSheetSelectComponent } from './bottom-sheet-select/bottom-sheet-s
     FormsModule,
     HammerModule
   ],
-  providers: [],
+  providers: [
+    { provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -75,6 +75,7 @@ export class EmployeeListComponent implements OnInit {
   
   undoDelete(): void {
     if (this.deletedEmployee && this.deletedEmployee.id !== undefined) {
+      delete this.deletedEmployee.showDelete;
       this.dbService.addWithId('employees', this.deletedEmployee as Employee & { id: number }).then(() => {
         this.currentEmployees.push(this.deletedEmployee!);
         this.deletedEmployee = null;
