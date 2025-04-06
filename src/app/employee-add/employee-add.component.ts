@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { Employee } from '../models/Employee';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IndexedDbService } from '../services/indexed-db.service';
@@ -10,70 +10,74 @@ import * as moment from 'moment';
   templateUrl: './employee-add.component.html',
   styleUrls: ['./employee-add.component.scss']
 })
-export class EmployeeAddComponent implements OnInit {
-  employeeForm!: FormGroup;
-  isEditMode = false;
-  employeeId?: number;
-  roles = ['Product Designer', 'Flutter Developer', 'QA Tester', 'Product Owner'];
-  
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private indexedDbService: IndexedDbService,
-    private fb: FormBuilder,
-  ) { }
-
-  ngOnInit(): void {
-    this.employeeForm = this.fb.group({
+export class EmployeeAddComponent {
+  employeeForm = signal<FormGroup>(
+    this.fb.group({
       name: ['', Validators.required],
       role: ['', Validators.required],
       fromDate: [moment().format("YYYY-MM-DD"), Validators.required],
       toDate: ['']
-    });
+    })
+  );
 
+  employeeId = signal<number | undefined>(undefined);
+
+  isEditMode = computed(() => this.employeeId() !== undefined);
+
+  roles = ['Product Designer', 'Flutter Developer', 'QA Tester', 'Product Owner'];
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private indexedDbService: IndexedDbService,
+    private fb: FormBuilder
+  ) {
     const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
-      this.isEditMode = true;
-      this.employeeId = +idParam;
 
-      this.indexedDbService.getByKey<Employee>('employees', this.employeeId)
-        .then(employee => {
-          if (employee) {
-            this.employeeForm.patchValue(employee);
-          } else {
-            console.error('Employee not found');
-            this.router.navigate(['/']);
-          }
-        });
+    if (idParam) {
+      const id = +idParam;
+      this.employeeId.set(id);
+
+      this.indexedDbService.getByKey<Employee>('employees', id).then(employee => {
+        if (employee) {
+          this.employeeForm().patchValue(employee);
+        } else {
+          console.error('Employee not found');
+          this.router.navigate(['/']);
+        }
+      });
     }
+
+    effect(() => {
+      const form = this.employeeForm();
+      if (form.valid) {
+        console.log('Form is valid:', form.value);
+      }
+    });
   }
 
   saveEmployee(): void {
-    if (this.employeeForm.valid) {
-      const formValue = this.employeeForm.value;
+    const form = this.employeeForm();
 
-      if (this.isEditMode && this.employeeId !== undefined) {
+    if (form.valid) {
+      const formValue = form.value;
+
+      if (this.isEditMode() && this.employeeId() !== undefined) {
         const updatedEmployee = {
-          ...this.employeeForm.value,
-          id: this.employeeId // this must be a defined number
+          ...formValue,
+          id: this.employeeId()!
         };
 
-        if (updatedEmployee.id !== undefined) {
-          this.indexedDbService.update('employees', updatedEmployee)
-            .then(() => this.router.navigate(['']))
-            .catch(err => console.error('Error updating employee:', err));
-        } else {
-          console.error('Employee ID is missing for update');
-        }
+        this.indexedDbService.update('employees', updatedEmployee)
+          .then(() => this.router.navigate(['']))
+          .catch(err => console.error('Error updating employee:', err));
       } else {
-        this.indexedDbService.add('employees', this.employeeForm.value)
-        .then(() => this.router.navigate(['']))
-        .catch(err => console.error('Error saving employee:', err));
-        
+        this.indexedDbService.add('employees', formValue)
+          .then(() => this.router.navigate(['']))
+          .catch(err => console.error('Error saving employee:', err));
       }
-    }
-    else {
-      this.employeeForm.markAllAsTouched();
+    } else {
+      form.markAllAsTouched();
     }
   }
 
